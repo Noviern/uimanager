@@ -51,17 +51,18 @@ local uiBoundKeys = {
   "ui_bound_targettotarget",
   "ui_bound_watchtarget",
 }
+---@TODO: filePath could fail if the user installed ArcheRage on another drive. Need to find a way to get the ArcheRage Documents folder.
 local filePath = "C:/ArcheRage/Documents/Addon/" .. ADDON:GetName() .. "/ui_bounds.lua"
 
----Creates the addon manager window.
+---Creates the UI manager window.
 ---@return Window
 local function CreateUIManagerWindow()
   local window           = SetViewOfUIManagerWindow()
   local titleBar         = window.titleBar ---@type Window
   local closeButton      = titleBar.closeButton ---@type Button
   local contentFrame     = window.contentFrame ---@type EmptyWidget
-  local saveButton       = contentFrame.saveFrame.saveButton ---@type Button
   local saveEditbox      = contentFrame.saveFrame.saveEditbox ---@type X2EditBox
+  local saveButton       = contentFrame.saveFrame.saveButton ---@type Button
   local loadCombobox     = contentFrame.loadFrame.loadCombobox ---@type Combobox
   local selectorBtn      = loadCombobox.selectorBtn ---@type Button
   local toggle           = loadCombobox.toggle ---@type Button
@@ -71,8 +72,8 @@ local function CreateUIManagerWindow()
   local vslider          = dropdown.vslider ---@type Vslider
   local thumb            = dropdown.vslider.thumb ---@type Button
   local scrollBackground = dropdown.scrollBackground ---@type DrawableDDS
-  local loadButton       = contentFrame.loadFrame.loadButton ---@type Button
   local loadDeleteButton = contentFrame.loadFrame.loadDeleteButton ---@type Button
+  local loadButton       = contentFrame.loadFrame.loadButton ---@type Button
 
   window:SetSounds("bag")
   window:SetCloseOnEscape(true)
@@ -96,6 +97,12 @@ local function CreateUIManagerWindow()
 
   saveEditbox:SetHandler("OnTextChanged", function (self)
     saveButton:Enable(#saveEditbox:GetText() ~= 0)
+  end)
+
+  saveEditbox:SetHandler("OnEnterPressed", function (self)
+    if #saveEditbox:GetText() ~= 0 then
+      saveButton:SaveUI()
+    end
   end)
 
   function dropdown:UpdateList()
@@ -136,6 +143,7 @@ local function CreateUIManagerWindow()
 
         if enableVSlider then
           scrollBackground:SetTextureColor("default")
+          vslider:Up(max)
         else
           scrollBackground:SetTextureColor("disable")
         end
@@ -152,29 +160,33 @@ local function CreateUIManagerWindow()
 
   saveButton:Enable(false)
 
-  saveButton:SetHandler("OnClick", function ()
-    local savedUIBounds, error = table.load(filePath)
-
-    if not error then
-      local uiBoundCollection = {}
-      local key = saveEditbox:GetText()
-
-      saveEditbox:SetText("")
-
-      for _, key in pairs(uiBoundKeys) do
-        local uiBound = UIParent:GetUIBound(key)
-
-        uiBoundCollection[key] = uiBound
-      end
-
-      savedUIBounds[key] = uiBoundCollection
-      local success, error = table.save(filePath, savedUIBounds)
+  function saveButton:SaveUI()
+    if #saveEditbox:GetText() ~= 0 then
+      local savedUIBounds, error = table.load(filePath)
 
       if not error then
-        dropdown:UpdateList()
+        local uiBoundCollection = {}
+        local key = saveEditbox:GetText()
+
+        saveEditbox:SetText("")
+
+        for _, key in pairs(uiBoundKeys) do
+          local uiBound = UIParent:GetUIBound(key)
+
+          uiBoundCollection[key] = uiBound
+        end
+
+        savedUIBounds[key] = uiBoundCollection
+        local success = table.save(filePath, savedUIBounds)
+
+        if success then
+          dropdown:UpdateList()
+        end
       end
     end
-  end)
+  end
+
+  saveButton:SetHandler("OnClick", saveButton.SaveUI)
 
   loadDeleteButton:SetHandler("OnClick", function ()
     local savedUIBounds, error = table.load(filePath)
@@ -183,9 +195,9 @@ local function CreateUIManagerWindow()
       local key = loadCombobox.selectorBtn:GetText()
       savedUIBounds[key] = nil
 
-      local success, error = table.save(filePath, savedUIBounds)
+      local success = table.save(filePath, savedUIBounds)
 
-      if not error then
+      if success then
         dropdown:UpdateList()
       end
     end
@@ -217,11 +229,12 @@ local function CreateUIManagerWindow()
     window:Show(false)
 
     local savedUIBounds, error = table.load(filePath)
-    local vsync = X2Option:GetConsoleVariable("r_VSync")
-    local key = loadCombobox.selectorBtn:GetText()
 
     if not error then
-      for key, uiBound in pairs(savedUIBounds[key]) do
+      local vsync  = X2Option:GetConsoleVariable("r_VSync")
+      local uiName = loadCombobox.selectorBtn:GetText()
+
+      for key, uiBound in pairs(savedUIBounds[uiName]) do
         UIParent:SetUIBound(key, uiBound)
       end
 
@@ -236,7 +249,7 @@ local function CreateUIManagerWindow()
   return window
 end
 
----Toggles the addon manager window.
+---Toggles the UI manager window.
 ---@param show boolean|nil
 local function ToggleManagerWindow(show)
   -- If the window should be shown.
@@ -260,8 +273,4 @@ local function ToggleManagerWindow(show)
 end
 
 ADDON:RegisterContentTriggerFunc(UIC_UIMANAGER, ToggleManagerWindow)
--- ADDON:AddEscMenuButton(5, UIC_UIMANAGER, "optimizer", locale.addon.name)
-
-ToggleManagerWindow()
--- local window = SetViewOfUIManagerWindow()
--- window:Show(true)
+ADDON:AddEscMenuButton(5, UIC_UIMANAGER, "optimizer", locale.addon.name)

@@ -11,9 +11,3 @@ locale.addon = {
   guideText = "Enter a UI name.",
   load      = "Load",
 }
-
--- function X2Locale:GetLocale()
-  -- return "fr"
-  -- return "ru"
-  -- return "zh_cn"
--- end
