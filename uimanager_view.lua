@@ -69,7 +69,7 @@ function SetViewOfUIManagerWindow()
   saveFrame:AddAnchor("TOPLEFT", 0, 0)
   saveFrame:AddAnchor("TOPRIGHT", 0, 0)
 
-  -- Create save editbox fro save frame.
+  -- Create save editbox for save frame.
   local saveEditbox = saveFrame:CreateChildWidget("x2editbox", "saveEditbox", 0, true)
   saveEditbox:SetInset(inset[1], inset[2], inset[3], inset[4])
   saveEditbox:UseSelectAllWhenFocused(true)
@@ -97,19 +97,20 @@ function SetViewOfUIManagerWindow()
   loadFrame:AddAnchor("TOPRIGHT", saveFrame, "BOTTOMRIGHT", 0, WINDOW.MARGIN)
 
   -- Create load combobox for load frame.
-  local loadCombobox           = loadFrame:CreateChildWidget("combobox", "loadCombobox", 0, true)
-  local selectorBtn            = loadCombobox.selectorBtn
-  local selector               = loadCombobox.selector
-  local toggle                 = loadCombobox.toggle
-  local dropdown               = loadCombobox.dropdown
-  local upButton               = dropdown.upBtn
-  local downButton             = dropdown.downBtn
-  local vslider                = dropdown.vslider
-  local thumb                  = dropdown.vslider.thumb
+  local loadCombobox = loadFrame:CreateChildWidget("combobox", "loadCombobox", 0, true)
 
   local loadComboboxBackground = loadCombobox:CreateDrawable(TEXTURE_PATH.DEFAULT, "editbox_df", "background")
   loadComboboxBackground:AddAnchor("TOPLEFT", loadCombobox, 0, 0)
   loadComboboxBackground:AddAnchor("BOTTOMRIGHT", loadCombobox, 0, 0)
+
+  local selectorBtn = loadCombobox.selectorBtn
+  local selector    = loadCombobox.selector
+  local toggle      = loadCombobox.toggle
+  local dropdown    = loadCombobox.dropdown
+  local upButton    = dropdown.upBtn
+  local downButton  = dropdown.downBtn
+  local vslider     = dropdown.vslider
+  local thumb       = dropdown.vslider.thumb
 
   selectorBtn.style:SetAlign(ALIGN_LEFT)
   selectorBtn.style:SetEllipsis(true)
@@ -197,7 +198,6 @@ function SetViewOfUIManagerWindow()
   downButtonDisabledBackground:AddAnchor("BOTTOMRIGHT", downButton, 0, 0)
   downButton:SetDisabledBackground(downButtonDisabledBackground)
 
-  vslider:SetMinThumbLength(50)
   vslider:AddAnchor("TOPLEFT", upButton, "BOTTOMLEFT", 0, 0)
   vslider:AddAnchor("BOTTOMRIGHT", downButton, "TOPRIGHT", 0, 0)
 
@@ -207,8 +207,7 @@ function SetViewOfUIManagerWindow()
   scrollBackground:AddAnchor("BOTTOMRIGHT", vslider, -3, 9)
   dropdown.scrollBackground = scrollBackground
 
-  thumb:EnableDrag(true)
-  thumb:SetExtent(20, 40)
+  thumb:SetWidth(20)
 
   local thumbNormalBackground = thumb:CreateDrawable(TEXTURE_PATH.SCROLL, "thumb_df", "background")
   thumbNormalBackground:AddAnchor("TOPLEFT", thumb, 0, 0)

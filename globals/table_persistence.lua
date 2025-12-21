@@ -32,21 +32,17 @@ end
 ---Saves a table to a file as executable Lua code (`return { ... }`).
 ---@param filename string The file path to write.
 ---@param list table The table to save.
----@return boolean success `true` if saved successfully, `false` otherwise.
 ---@return string|nil error Error message if failed, otherwise `nil`.
 ---@nodiscard
 function table.save(filename, list)
   local file, error = io.open(filename, "w")
-  local success = false
 
   if file then
-    success = true
-
     file:write("return ", table.serialize(list))
     file:close()
   end
 
-  return success, error
+  return error
 end
 
 ---Loads a table from a file created by `table.save`.
@@ -67,7 +63,7 @@ function table.load(filename)
     elseif type(result) == "table" then
       list = result
     else
-      error = "File did not return a table."
+      error = filename .. " did not return a table."
     end
   end
 

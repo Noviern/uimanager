@@ -96,19 +96,21 @@ local function CreateUIManagerWindow()
   end)
 
   saveEditbox:SetHandler("OnTextChanged", function (self)
-    saveButton:Enable(#saveEditbox:GetText() ~= 0)
+    saveButton:Enable(#saveEditbox:GetText() > 0)
   end)
 
   saveEditbox:SetHandler("OnEnterPressed", function (self)
-    if #saveEditbox:GetText() ~= 0 then
+    if #saveEditbox:GetText() > 0 then
       saveButton:SaveUI()
     end
   end)
 
   function dropdown:UpdateList()
-    local savedUIBounds, error = table.load(filePath)
+    local savedUIBounds, loadError = table.load(filePath)
 
-    if not error then
+    if loadError then
+      ADDON:ChatLog(loadError)
+    else
       loadCombobox.selectorBtn:SetText("")
       dropdown:ClearItem()
 
@@ -123,19 +125,14 @@ local function CreateUIManagerWindow()
         table.sort(list, function (a, b) return a:lower() < b:lower() end)
 
         for key, value in pairs(list) do
-          dropdown:AppendItemByTable({
-            text = value,
-            value = key
-          })
+          dropdown:AppendItem(value, key)
         end
 
-        dropdown:Select(0)
-
-        local max = dropdown:GetMaxTop()
-
-        vslider:SetMinMaxValues(0, max)
-
+        local max           = dropdown:GetMaxTop()
         local enableVSlider = max > 0
+
+        dropdown:Select(0)
+        vslider:SetMinMaxValues(0, max)
 
         upButton:Enable(enableVSlider)
         thumb:Enable(enableVSlider)
@@ -161,10 +158,12 @@ local function CreateUIManagerWindow()
   saveButton:Enable(false)
 
   function saveButton:SaveUI()
-    if #saveEditbox:GetText() ~= 0 then
-      local savedUIBounds, error = table.load(filePath)
+    if #saveEditbox:GetText() > 0 then
+      local savedUIBounds, loadError = table.load(filePath)
 
-      if not error then
+      if loadError then
+        ADDON:ChatLog(loadError)
+      else
         local uiBoundCollection = {}
         local key = saveEditbox:GetText()
 
@@ -177,9 +176,11 @@ local function CreateUIManagerWindow()
         end
 
         savedUIBounds[key] = uiBoundCollection
-        local success = table.save(filePath, savedUIBounds)
+        local saveError = table.save(filePath, savedUIBounds)
 
-        if success then
+        if saveError then
+          ADDON:ChatLog(saveError)
+        else
           dropdown:UpdateList()
         end
       end
@@ -189,15 +190,19 @@ local function CreateUIManagerWindow()
   saveButton:SetHandler("OnClick", saveButton.SaveUI)
 
   loadDeleteButton:SetHandler("OnClick", function ()
-    local savedUIBounds, error = table.load(filePath)
+    local savedUIBounds, loadError = table.load(filePath)
 
-    if not error then
+    if loadError then
+      ADDON:ChatLog(loadError)
+    else
       local key = loadCombobox.selectorBtn:GetText()
       savedUIBounds[key] = nil
 
-      local success = table.save(filePath, savedUIBounds)
+      local saveError = table.save(filePath, savedUIBounds)
 
-      if success then
+      if saveError then
+        ADDON:ChatLog(saveError)
+      else
         dropdown:UpdateList()
       end
     end
@@ -228,11 +233,13 @@ local function CreateUIManagerWindow()
   loadButton:SetHandler("OnClick", function ()
     window:Show(false)
 
-    local savedUIBounds, error = table.load(filePath)
+    local savedUIBounds, loadError = table.load(filePath)
 
-    if not error then
+    if loadError then
+      ADDON:ChatLog(loadError)
+    else
       local vsync  = X2Option:GetConsoleVariable("r_VSync")
-      local uiName = loadCombobox.selectorBtn:GetText()
+      local uiName = selectorBtn:GetText()
 
       for key, uiBound in pairs(savedUIBounds[uiName]) do
         UIParent:SetUIBound(key, uiBound)
