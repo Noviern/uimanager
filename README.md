@@ -3,8 +3,4 @@
 # UI Manager
 Allows the player to save and load their UI across multiple characters.
 
-![UI Manager](https://i.imgur.com/xkWto2g.png)
-
-## Known Bugs
-- If a UI element hasn't been moved by the player then it wont have a UI bounds
-to save.
+![UI Manager](https://i.imgur.com/H8Rg6Ce.png)

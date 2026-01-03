@@ -1,29 +1,46 @@
 ---Serializes a value to a Lua string representation.
----Supports numbers, booleans, strings, and tables (with string/number keys).
----Errors on unsupported types.
----@param o any
----@return string result
+---Supports numbers, booleans, strings, and tables (with string/number/boolean keys).
+---Returns nil and an error message on unsupported types or invalid keys.
+---@param o any The value to serialize.
+---@return string|nil result The serialized string, or nil on error.
+---@return string|nil error Error message if serialization failed.
 ---@nodiscard
 local function serialize(o)
-  if type(o) == "number" or type(o) == "boolean" then
+  local t = type(o)
+
+  if t == "number" or t == "boolean" then
     return tostring(o)
-  elseif type(o) == "string" then
+  elseif t == "string" then
     return string.format("%q", o)
-  elseif type(o) == "table" then
-    local s = "{"
+  elseif t == "table" then
+    local entries = {}
+
     for k, v in pairs(o) do
-      if s ~= "{" then s = s .. "," end
-      s = s .. "[" .. serialize(k) .. "]=" .. serialize(v)
+      -- Serialize key
+      local keyResult, keyError = serialize(k)
+      if not keyResult then
+        return nil, "Invalid table key: " .. keyError
+      end
+
+      -- Serialize value
+      local valueResult, valueError = serialize(v)
+      if not valueResult then
+        return nil, "Invalid table value: " .. valueError
+      end
+
+      table.insert(entries, "[" .. keyResult .. "]=" .. valueResult)
     end
-    return s .. "}"
+
+    return "{" .. table.concat(entries, ",") .. "}"
   else
-    error("cannot serialize type " .. type(o))
+    return nil, "Cannot serialize type: " .. t
   end
 end
 
 ---Serializes a table to a Lua code string.
 ---@param list table The table to serialize.
----@return string serialized The Lua code representation.
+---@return string|nil result The serialized string, or nil on error.
+---@return string|nil error Error message if serialization failed.
 ---@nodiscard
 function table.serialize(list)
   return serialize(list)
@@ -38,8 +55,14 @@ function table.save(filename, list)
   local file, error = io.open(filename, "w")
 
   if file then
-    file:write("return ", table.serialize(list))
-    file:close()
+    local result, serializeError = table.serialize(list)
+
+    if serializeError then
+      return serializeError
+    else
+      file:write("return ", result)
+      file:close()
+    end
   end
 
   return error

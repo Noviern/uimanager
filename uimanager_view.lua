@@ -8,6 +8,7 @@ ADDON:ImportObject(OBJECT.Slider)
 ADDON:ImportObject(OBJECT.TextStyle)
 ADDON:ImportObject(OBJECT.Window)
 ADDON:ImportObject(OBJECT.X2Editbox)
+ADDON:ImportObject(OBJECT.Textbox)
 
 WINDOW             = {
   UIBOUND_NAME      = "ui_bound_uimanager",
@@ -71,14 +72,15 @@ function SetViewOfUIManagerWindow()
 
   -- Create save editbox for save frame.
   local saveEditbox = saveFrame:CreateChildWidget("x2editbox", "saveEditbox", 0, true)
-  saveEditbox:SetInset(inset[1], inset[2], inset[3], inset[4])
-  saveEditbox:UseSelectAllWhenFocused(true)
-  saveEditbox.style:SetColorByKey("default")
-  saveEditbox.style:SetAlign(ALIGN_LEFT)
-  saveEditbox:SetGuideText(locale.addon.guideText)
   saveEditbox.guideTextStyle:SetAlign(ALIGN_LEFT)
   saveEditbox.guideTextStyle:SetColorByKey("guide_text_in_editbox")
   saveEditbox:SetGuideTextInset({ inset[1], inset[2], inset[3], inset[4] })
+  saveEditbox:SetGuideText(locale.addon.guide)
+  saveEditbox.style:SetColorByKey("default")
+  saveEditbox.style:SetAlign(ALIGN_LEFT)
+  saveEditbox:SetInset(inset[1], inset[2], inset[3], inset[4])
+  saveEditbox:UseSelectAllWhenFocused(true)
+  saveEditbox:SetCursorColorByColorKey("editbox_cursor_default")
 
   local saveEditboxBackground = saveEditbox:CreateDrawable(TEXTURE_PATH.DEFAULT, "editbox_df", "background")
   saveEditboxBackground:AddAnchor("TOPLEFT", saveEditbox, 0, 0)
@@ -236,6 +238,16 @@ function SetViewOfUIManagerWindow()
   loadFrame:SetHeight(loadButton:GetHeight())
   loadDeleteButton:SetExtent(loadButton:GetHeight(), loadButton:GetHeight())
 
+  -- Create helper textbox.
+  local helperTextbox = window:CreateChildWidget("textbox", "helperTextbox", 0, true)
+  helperTextbox.style:SetAlign(ALIGN_LEFT)
+  helperTextbox.style:SetColorByKey("gray")
+  helperTextbox:AddAnchor("TOPLEFT", loadFrame, "BOTTOMLEFT", 0, WINDOW.MARGIN)
+  helperTextbox:AddAnchor("TOPRIGHT", loadFrame, "BOTTOMRIGHT", 0, WINDOW.MARGIN)
+  helperTextbox:SetAutoResize(true)
+
+  helperTextbox:SetText(locale.addon.helper)
+
   -- Anchor elements in save frame.
   saveEditbox:AddAnchor("TOPLEFT", 0, 0)
   saveEditbox:AddAnchor("BOTTOMRIGHT", saveButton, "BOTTOMLEFT", 0, 0)
@@ -251,11 +263,11 @@ function SetViewOfUIManagerWindow()
   -- set the extent when the loadCombobox extent is known.
   dropdown:SetExtent(selectorBtn:GetWidth(), 10 * dropdown:GetHeight() + inset[2] + inset[4])
 
-  local _, loadFrameOffsetY    = loadFrame:GetOffset()
-  local _, contentFrameOffsetY = contentFrame:GetOffset()
-  local _, windowOffsetY       = window:GetOffset()
+  local _, helperTextboxOffsetY = helperTextbox:GetOffset()
+  local _, contentFrameOffsetY  = contentFrame:GetOffset()
+  local _, windowOffsetY        = window:GetOffset()
 
-  contentFrame:SetHeight(loadFrameOffsetY - contentFrameOffsetY + loadFrame:GetHeight())
+  contentFrame:SetHeight(helperTextboxOffsetY - contentFrameOffsetY + helperTextbox:GetHeight())
   window:SetHeight(contentFrameOffsetY - windowOffsetY + contentFrame:GetHeight() + WINDOW.MARGIN)
 
   return window

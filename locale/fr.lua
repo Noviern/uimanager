@@ -1,9 +1,12 @@
 if X2Locale:GetLocale() == "fr" then
   locale.addon = {
-    name      = "Gestionnaire d'interface utilisateur",
-    title     = "Gestionnaire d'interface utilisateur",
-    save      = "Enregistrer",
-    guideText = "Entrez un nom d'interface utilisateur.",
-    load      = "Charger",
+    name   = "Gestionnaire d'interface utilisateur",
+    title  = "Gestionnaire d'interface utilisateur",
+    save   = "Enregistrer",
+    guide  = "Entrez un nom d'interface utilisateur.",
+    load   = "Charger",
+    helper =
+      "|bu-;Seuls les éléments d'interface utilisateur déplacés endpeuvent être sauvegardés !|br\n|bu-;Le " ..
+      "endchargement d'une interface utilisateur provoquera un bref blocage du jeu.",
   }
 end

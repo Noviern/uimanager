@@ -50,6 +50,8 @@ local uiBoundKeys = {
   "ui_bound_targetFrame",
   "ui_bound_targettotarget",
   "ui_bound_watchtarget",
+
+  -- Add custom addon ui_bounds below.
 }
 ---@TODO: filePath could fail if the user installed ArcheRage on another drive. Need to find a way to get the ArcheRage Documents folder.
 local filePath = "C:/ArcheRage/Documents/Addon/" .. ADDON:GetName() .. "/ui_bounds.lua"
@@ -175,6 +177,8 @@ local function CreateUIManagerWindow()
           uiBoundCollection[key] = uiBound
         end
 
+        uiBoundCollection.ui_scale = UIParent:GetUIScale()
+
         savedUIBounds[key] = uiBoundCollection
         local saveError = table.save(filePath, savedUIBounds)
 
@@ -241,9 +245,17 @@ local function CreateUIManagerWindow()
       local vsync  = X2Option:GetConsoleVariable("r_VSync")
       local uiName = selectorBtn:GetText()
 
-      for key, uiBound in pairs(savedUIBounds[uiName]) do
-        UIParent:SetUIBound(key, uiBound)
+      for _, key in pairs(uiBoundKeys) do
+        local uiBound = savedUIBounds[uiName][key]
+
+        if uiBound == nil then
+          UIParent:ClearUIBound(key)
+        else
+          UIParent:SetUIBound(key, uiBound)
+        end
       end
+
+      UIParent:SetUIScale(savedUIBounds[uiName].ui_scale, true)
 
       if vsync == "1" then
         X2Option:SetConsoleVariable("r_VSync", "0")
