@@ -1,4 +1,4 @@
-[English](README.md) | [Français](README.fr.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md)
+[English](README.md) | [Français](README.fr.md) | [Русский](README.ru.md) | [简体中文](README.zh_cn.md)
 
 # Gestionnaire d'UI
 Permet au joueur d'enregistrer et de charger son interface utilisateur sur plusieurs personnages.
