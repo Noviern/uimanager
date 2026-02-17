@@ -11,13 +11,13 @@ ADDON:ImportObject(OBJECT.X2Editbox)
 ADDON:ImportObject(OBJECT.Textbox)
 
 WINDOW             = {
-  UIBOUND_NAME      = "ui_bound_uimanager",
-  WIDTH             = 350,
-  HEIGHT            = 200,
-  TITLE_HEIGHT      = 45,
-  MARGIN            = 20,
-  ITEM_DIMENSION    = 30,
-  VISIBLE_ROW_COUNT = 15
+  UIBOUND_NAME               = "ui_bound_uimanager",
+  WIDTH                      = 350,
+  HEIGHT                     = 200,
+  TITLE_HEIGHT               = 45,
+  MARGIN                     = 20,
+  ITEM_DIMENSION             = 30,
+  VISIBLE_DROPDOWN_ROW_COUNT = 10,
 }
 
 local defaultColor = UIParent:GetFontColor("default")
@@ -106,7 +106,6 @@ function SetViewOfUIManagerWindow()
   loadComboboxBackground:AddAnchor("BOTTOMRIGHT", loadCombobox, 0, 0)
 
   local selectorBtn = loadCombobox.selectorBtn
-  local selector    = loadCombobox.selector
   local toggle      = loadCombobox.toggle
   local dropdown    = loadCombobox.dropdown
   local upButton    = dropdown.upBtn
@@ -121,11 +120,6 @@ function SetViewOfUIManagerWindow()
   selectorBtn:SetPushedTextColor(defaultColor[1], defaultColor[2], defaultColor[3], defaultColor[4])
   selectorBtn:SetDisabledTextColor(defaultColor[1], defaultColor[2], defaultColor[3], defaultColor[4])
   selectorBtn:SetInset(inset[1], inset[2], inset[3], inset[4])
-
-  selector.guideTextStyle:SetAlign(ALIGN_LEFT)
-  selector.guideTextStyle:SetColorByKey("guide_text_in_editbox")
-  selector:SetGuideTextInset({ inset[1], inset[2], inset[3], inset[4] })
-  selector:SetGuideText("Save a UI")
 
   toggle:AddAnchor("RIGHT", selectorBtn, -2, 2)
   toggle:SetStyle("grid_folder_down_arrow")
@@ -261,7 +255,10 @@ function SetViewOfUIManagerWindow()
 
   -- Set dropdown extent. selectorBtn is anchored to loadCombobox so we can only
   -- set the extent when the loadCombobox extent is known.
-  dropdown:SetExtent(selectorBtn:GetWidth(), 10 * dropdown:GetHeight() + inset[2] + inset[4])
+  dropdown:SetExtent(
+    selectorBtn:GetWidth(),
+    WINDOW.VISIBLE_DROPDOWN_ROW_COUNT * dropdown:GetHeight() + inset[2] + inset[4]
+  )
 
   local _, helperTextboxOffsetY = helperTextbox:GetOffset()
   local _, contentFrameOffsetY  = contentFrame:GetOffset()

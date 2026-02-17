@@ -63,7 +63,7 @@ local function CreateUIManagerWindow()
   local titleBar         = window.titleBar ---@type Window
   local closeButton      = titleBar.closeButton ---@type Button
   local contentFrame     = window.contentFrame ---@type EmptyWidget
-  local saveEditbox      = contentFrame.saveFrame.saveEditbox ---@type X2EditBox
+  local saveEditbox      = contentFrame.saveFrame.saveEditbox ---@type X2Editbox
   local saveButton       = contentFrame.saveFrame.saveButton ---@type Button
   local loadCombobox     = contentFrame.loadFrame.loadCombobox ---@type Combobox
   local selectorBtn      = loadCombobox.selectorBtn ---@type Button
