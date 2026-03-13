@@ -10,7 +10,7 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Create ZIP
         run: zip -r "${{ github.event.repository.name }}.zip" . -x ".git/*"
