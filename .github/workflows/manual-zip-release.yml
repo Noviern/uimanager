@@ -1,0 +1,24 @@
+name: Manual ZIP Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create ZIP
+        run: zip -r "${{ github.event.repository.name }}.zip" . -x ".git/*"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest
+          make_latest: true
+          files: ${{ github.event.repository.name }}.zip
