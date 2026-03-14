@@ -17,6 +17,20 @@ jobs:
       - name: Create ZIP
         run: zip -r "${{ github.event.repository.name }}.zip" . -x ".git/*"
 
+      - name: Delete existing 'latest' release if it exists
+        continue-on-error: true
+        run: gh release delete latest --yes
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Create/Update Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest
+          make_latest: true
+          files: ${{ github.event.repository.name }}.zip
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
