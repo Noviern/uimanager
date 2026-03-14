@@ -1,4 +1,4 @@
-name: ZIP Release on Push
+name: ZIP Release
 
 on:
   push:
@@ -14,30 +14,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
+
+      - name: Generate timestamp tag
+        run: |
+          echo "TAG=$(date -u +%Y%m%d-%H%M)" >> $GITHUB_ENV
+          echo "RELEASE_NAME=Push $(date -u +'%Y-%m-%d %H:%M UTC')" >> $GITHUB_ENV
 
       - name: Create ZIP
         run: zip -r "${{ github.event.repository.name }}.zip" . -x ".git/*"
 
-      - name: Force update 'latest' tag
-        run: |
-          git tag -f latest
-          git push -f origin latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete old 'latest' release
-        continue-on-error: true
-        run: gh release delete latest --yes
-        env:
-          GH_TOKEN: ${{ github.token }}
-
-      - name: Create Release (fresh Source code zip)
+      - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: latest
-          name: Latest
-          body: "Updated on every push to master"
+          tag_name: ${{ env.TAG }} 
+          name: ${{ env.RELEASE_NAME }}
+          body: "Auto-released on push to master"
           make_latest: true
           files: ${{ github.event.repository.name }}.zip
