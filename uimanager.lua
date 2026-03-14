@@ -113,7 +113,7 @@ local function CreateUIManagerWindow()
     if loadError then
       ADDON:ChatLog(loadError)
     else
-      loadCombobox.selectorBtn:SetText("")
+      selectorBtn:SetText("")
       dropdown:ClearItem()
 
       local list = {}
@@ -167,7 +167,7 @@ local function CreateUIManagerWindow()
         ADDON:ChatLog(loadError)
       else
         local uiBoundCollection = {}
-        local key = saveEditbox:GetText()
+        local uiName = saveEditbox:GetText()
 
         saveEditbox:SetText("")
 
@@ -179,13 +179,14 @@ local function CreateUIManagerWindow()
 
         uiBoundCollection.ui_scale = UIParent:GetUIScale()
 
-        savedUIBounds[key] = uiBoundCollection
+        savedUIBounds[uiName] = uiBoundCollection
         local saveError = table.save(filePath, savedUIBounds)
 
         if saveError then
           ADDON:ChatLog(saveError)
         else
           dropdown:UpdateList()
+          ADDON:ChatLog(locale.addon.saved .. ": " .. uiName)
         end
       end
     end
@@ -199,8 +200,8 @@ local function CreateUIManagerWindow()
     if loadError then
       ADDON:ChatLog(loadError)
     else
-      local key = loadCombobox.selectorBtn:GetText()
-      savedUIBounds[key] = nil
+      local uiName = selectorBtn:GetText()
+      savedUIBounds[uiName] = nil
 
       local saveError = table.save(filePath, savedUIBounds)
 
@@ -208,6 +209,7 @@ local function CreateUIManagerWindow()
         ADDON:ChatLog(saveError)
       else
         dropdown:UpdateList()
+        ADDON:ChatLog(locale.addon.deleted .. ": " .. uiName)
       end
     end
   end)
@@ -244,6 +246,8 @@ local function CreateUIManagerWindow()
     else
       local vsync  = X2Option:GetConsoleVariable("r_VSync")
       local uiName = selectorBtn:GetText()
+
+      ADDON:ChatLog(locale.addon.loading .. ": " .. uiName)
 
       for _, key in pairs(uiBoundKeys) do
         local uiBound = savedUIBounds[uiName][key]

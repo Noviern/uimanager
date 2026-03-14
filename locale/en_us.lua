@@ -5,10 +5,13 @@ if locale == nil then
 end
 
 locale.addon = {
-  name   = "UI Manager",
-  title  = "UI Manager",
-  save   = "Save",
-  guide  = "Enter UI name.",
-  load   = "Load",
-  helper = "|bu-;Only moved UI widgets can be saved!|br\n|bu-;Loading a UI will briefly freeze the game.",
+  name    = "UI Manager",
+  title   = "UI Manager",
+  save    = "Save",
+  saved   = "Saved",
+  guide   = "Enter UI name.",
+  deleted = "Deleted",
+  load    = "Load",
+  loading = "Loading",
+  helper  = "|bu-;Only moved UI widgets can be saved!|br\n|bu-;Loading a UI will briefly freeze the game.",
 }
