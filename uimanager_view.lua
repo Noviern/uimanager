@@ -11,12 +11,9 @@ ADDON:ImportObject(OBJECT.X2Editbox)
 ADDON:ImportObject(OBJECT.Textbox)
 
 WINDOW             = {
-  UIBOUND_NAME               = "ui_bound_uimanager",
   WIDTH                      = 350,
-  HEIGHT                     = 200,
   TITLE_HEIGHT               = 45,
   MARGIN                     = 20,
-  ITEM_DIMENSION             = 30,
   VISIBLE_DROPDOWN_ROW_COUNT = 10,
 }
 
