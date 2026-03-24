@@ -1,4 +1,5 @@
 ADDON:ImportAPI(API.X2Option)
+ADDON:ImportAPI(API.X2Chat)
 
 local UIC_UIMANAGER = 16777215
 local uiManagerWindow
@@ -53,8 +54,9 @@ local uiBoundKeys = {
 
   -- Add custom addon ui_bounds below.
 }
----@TODO: filePath could fail if the user installed ArcheRage on another drive. Need to find a way to get the ArcheRage Documents folder.
-local filePath = "C:/ArcheRage/Documents/Addon/" .. ADDON:GetName() .. "/ui_bounds.lua"
+local filePath = "../Documents/Addon/" .. ADDON:GetName() .. "/ui_bounds.lua"
+local ADDON_NAME = "|ic23895;[" .. ADDON:GetName() .. "]: "
+local option = { isUserChat = true }
 
 ---Creates the UI manager window.
 ---@return Window
@@ -111,7 +113,7 @@ local function CreateUIManagerWindow()
     local savedUIBounds, loadError = table.load(filePath)
 
     if loadError then
-      ADDON:ChatLog(loadError)
+      X2Chat:DispatchChatMessage(CMF_SYSTEM, ADDON_NAME .. loadError, option)
     else
       selectorBtn:SetText("")
       dropdown:ClearItem()
@@ -164,7 +166,7 @@ local function CreateUIManagerWindow()
       local savedUIBounds, loadError = table.load(filePath)
 
       if loadError then
-        ADDON:ChatLog(loadError)
+        X2Chat:DispatchChatMessage(CMF_SYSTEM, ADDON_NAME .. loadError, option)
       else
         local uiBoundCollection = {}
         local uiName = saveEditbox:GetText()
@@ -183,10 +185,10 @@ local function CreateUIManagerWindow()
         local saveError = table.save(filePath, savedUIBounds)
 
         if saveError then
-          ADDON:ChatLog(saveError)
+          X2Chat:DispatchChatMessage(CMF_SYSTEM, ADDON_NAME .. saveError, option)
         else
           dropdown:UpdateList()
-          ADDON:ChatLog(locale.addon.saved .. ": " .. uiName)
+          X2Chat:DispatchChatMessage(CMF_SYSTEM, ADDON_NAME .. locale.addon.saved .. ": " .. uiName, option)
         end
       end
     end
@@ -198,7 +200,7 @@ local function CreateUIManagerWindow()
     local savedUIBounds, loadError = table.load(filePath)
 
     if loadError then
-      ADDON:ChatLog(loadError)
+      X2Chat:DispatchChatMessage(CMF_SYSTEM, ADDON_NAME .. loadError, option)
     else
       local uiName = selectorBtn:GetText()
       savedUIBounds[uiName] = nil
@@ -206,10 +208,10 @@ local function CreateUIManagerWindow()
       local saveError = table.save(filePath, savedUIBounds)
 
       if saveError then
-        ADDON:ChatLog(saveError)
+        X2Chat:DispatchChatMessage(CMF_SYSTEM, ADDON_NAME .. saveError, option)
       else
         dropdown:UpdateList()
-        ADDON:ChatLog(locale.addon.deleted .. ": " .. uiName)
+        X2Chat:DispatchChatMessage(CMF_SYSTEM, ADDON_NAME .. locale.addon.deleted .. ": " .. uiName, option)
       end
     end
   end)
@@ -242,12 +244,12 @@ local function CreateUIManagerWindow()
     local savedUIBounds, loadError = table.load(filePath)
 
     if loadError then
-      ADDON:ChatLog(loadError)
+      X2Chat:DispatchChatMessage(CMF_SYSTEM, ADDON_NAME .. loadError, option)
     else
       local vsync  = X2Option:GetConsoleVariable("r_VSync")
       local uiName = selectorBtn:GetText()
 
-      ADDON:ChatLog(locale.addon.loading .. ": " .. uiName)
+      X2Chat:DispatchChatMessage(CMF_SYSTEM, ADDON_NAME .. locale.addon.loading .. ": " .. uiName, option)
 
       for _, key in pairs(uiBoundKeys) do
         local uiBound = savedUIBounds[uiName][key]
