@@ -55,7 +55,7 @@ local uiBoundKeys = {
   -- Add custom addon ui_bounds below.
 }
 local filePath = "../Documents/Addon/" .. ADDON:GetName() .. "/ui_bounds.lua"
-local ADDON_NAME = "|ic23895;[" .. ADDON:GetName() .. "]: "
+local ADDON_NAME = "|ic23895;[" .. locale.addon.name .. "]: "
 local option = { isUserChat = true }
 
 ---Creates the UI manager window.
