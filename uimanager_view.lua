@@ -26,7 +26,7 @@ local inset        = { 8, 5, 20, 5 }
 ---@return Window
 function SetViewOfUIManagerWindow()
   -- Create the main window.
-  local window = UIParent:CreateWidget("window", "manager", "UIParent")
+  local window = UIParent:CreateWidget("window", "uimanager", "UIParent")
   window:SetWidth(WINDOW.WIDTH)
   window:AddAnchor("CENTER", 0, 0)
 
