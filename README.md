@@ -3,4 +3,5 @@
 # UI Manager
 Allows the player to save and load their UI across multiple characters.
 
+![UI Manager](https://i.imgur.com/ANPkYG9.png)
 ![UI Manager](https://i.imgur.com/H8Rg6Ce.png)
